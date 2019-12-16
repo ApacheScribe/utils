@@ -137,7 +137,7 @@ public class Csv {
         for (int i = 0; i < files.length; i++) {
             File var = files[i];
             uploadCsv(files[i].getAbsolutePath()); // upload to sftp server
-            email.sendMailWithAttachment(var);
+            email.sendMailWithAttachment(files, ".csv"); // this won't work, check semantics
             log.info("Notification email sent for file " + var.getName() + ". Archiving it ...");
             try {
                 archiveExistingCsv(var.getName());

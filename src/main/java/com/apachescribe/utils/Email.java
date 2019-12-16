@@ -6,10 +6,12 @@ import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
+import javax.mail.Authenticator;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
@@ -32,17 +34,8 @@ public class Email {
     // @Value("${mail-to}")
     private String mailTo;
 
-    // @Value("${mail-to-cc1}")
-    private String mailToCc1;
-
-    // @Value("${mail-to-cc2}")
-    private String mailToCc2;
-
-    // @Value("${mail-to-cc3}")
-    private String mailToCc3;
-
-    // @Value("${mail-to-cc4}")
-    private String mailToCc4;
+    // @Value("${mail-to-cc}")
+    private String mailToCc;
 
     // @Value("${mail-subject}")
     private String mailSubject;
@@ -56,22 +49,43 @@ public class Email {
     // @Value("${mail-port}")
     private String mailPort;
 
-    public void sendMailWithAttachment(File attatchment) {
+    public Boolean sendMailWithAttachment(File[] a, String extension) {
+
+        Boolean mailSentSuccessfully = false;
+
+        log.info("Begin mail sending");
+        log.info("");
 
         // Get system properties
-        Properties properties = System.getProperties();
+        Properties properties = new Properties();
 
         // Setup mail server host
         properties.setProperty("mail.smtp.host", mailHost);
-        log.info("------------------- Begin mail sending");
-        log.info("Mail host: " + properties.getProperty("mail.smtp.host"));
+        log.info("Mail host: " + mailHost);
 
         // Setup mail server port
         properties.setProperty("mail.smtp.port", mailPort);
+        properties.setProperty("mail.smtp.socketFactory.port", mailPort);
+        properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.setProperty("mail.smtp.socketFactory.fallback", "true");
         log.info("Mail port: " + mailPort);
 
+        // enable auth
+        properties.setProperty("mail.smtp.auth", "true");
+        properties.setProperty("mail.smtp.starttls.enable", "true");
+        log.info("Auth: " + "true");
+
+        properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+
         // Get the default Session object.
-        Session session = Session.getDefaultInstance(properties);
+        Session session = Session.getInstance(properties, new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication("username", "password");
+            }
+        });
+
+        log.info("System properties set, properties added to a new session");
 
         try {
             // Create a default MimeMessage object.
@@ -86,20 +100,10 @@ public class Email {
             log.info("To: " + mailTo);
 
             // Set CC: header field of the header.
-            message.addRecipient(Message.RecipientType.CC, new InternetAddress(mailToCc1));
-            log.info("CC1: " + mailToCc1);
-
-            // Set CC: header field of the header.
-            message.addRecipient(Message.RecipientType.CC, new InternetAddress(mailToCc2));
-            log.info("CC2: " + mailToCc2);
-
-            // Set CC: header field of the header.
-            message.addRecipient(Message.RecipientType.CC, new InternetAddress(mailToCc3));
-            log.info("CC3: " + mailToCc3);
-
-            // Set CC: header field of the header.
-            message.addRecipient(Message.RecipientType.CC, new InternetAddress(mailToCc4));
-            log.info("CC4: " + mailToCc4);
+            for (int i = 0; i < mailToCc.split(",").length; i++) {
+                message.addRecipient(Message.RecipientType.CC, new InternetAddress(mailToCc.split(",")[i]));
+                log.info("CC" + i + ": " + mailToCc.split(",")[i]);
+            }
 
             // Set Subject: header field
             message.setSubject(mailSubject);
@@ -118,24 +122,30 @@ public class Email {
             // Set text message part
             multipart.addBodyPart(messageBodyPart);
 
-            // Part two is attachment1
-            messageBodyPart = new MimeBodyPart();
-            DataSource csvAttatchment = new FileDataSource(attatchment.getAbsolutePath());
-            messageBodyPart.setDataHandler(new DataHandler(csvAttatchment));
-            messageBodyPart.setFileName(attatchment.getName());
-            log.info("Attachment csv source: " + attatchment);
-            multipart.addBodyPart(messageBodyPart);
+            for (int i = 0; i < a.length; i++) {
+                if (a[i].getName().contains(extension)) {
+                    messageBodyPart = new MimeBodyPart();
+                    DataSource csvAttatchment = new FileDataSource(a[i]);
+                    messageBodyPart.setDataHandler(new DataHandler(csvAttatchment));
+                    messageBodyPart.setFileName(("NC Bank transactions " + a[i].getName()));
+                    multipart.addBodyPart(messageBodyPart);
+                    log.info("Attachment csv source: " + a[i]);
+                }
+            }
 
             // Send the complete message parts
             message.setContent(multipart);
 
             // Send message
             Transport.send(message);
-            log.info("------------------- Mail sent successfully");
+            log.info(" Sent email successfully.");
+            log.info("");
+            mailSentSuccessfully = true;
         } catch (MessagingException mex) {
-            log.error(mex);
             mex.printStackTrace();
-            System.exit(500);
+            log.error(mex);
+            log.info("");
         }
+        return mailSentSuccessfully;
     }
 }
