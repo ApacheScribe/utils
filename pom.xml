@@ -55,6 +55,13 @@
       <version>1.9.76</version>
     </dependency>
 
+    <!-- XML to JSON and reverse-->
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20160212</version>
+    </dependency>
+
   </dependencies>
 
   <build>
