@@ -4,11 +4,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-
 public class ConfigReader {
-
-    final static Logger LOGGER = Logger.getLogger(ConfigReader.class);
 
     // Loading the properties config file
     public static Config getConfigProperties() throws Exception {
@@ -23,7 +19,7 @@ public class ConfigReader {
             prop.load(input);
 
         } catch (Exception e) {
-            LOGGER.error(e.getMessage());
+            System.err.println(e.getMessage());
         }
 
         // get and set the property values

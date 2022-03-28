@@ -2,14 +2,11 @@ package com.apachescribe.utils;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
 // import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.stereotype.Component;
 
 // @Component
 public class FileMan {
-
-    private static final Logger log = Logger.getLogger(FileMan.class);
 
     // input: fullFilePath, output: filename
     public String getFilenameFromPath(String path) {
@@ -22,8 +19,8 @@ public class FileMan {
     public String getFilePath(String path) {
         String fileName = getFilenameFromPath(path);
         String filePath = path.replace(fileName, "");
-        log.info(fileName);
-        log.info(path);
+        System.out.println(fileName);
+        System.out.println(path);
         return filePath;
     }
 
@@ -32,9 +29,9 @@ public class FileMan {
         File file = new File(directoryName);
         if (!file.exists()) {
             if (file.mkdir()) {
-                log.info("Directory does not exist but is needed, creating it... ");
+                System.out.println("Directory does not exist but is needed, creating it... ");
             } else {
-                log.warn("Failed to create directory!");
+                System.out.println("Failed to create directory!");
             }
         }
     }
@@ -44,17 +41,17 @@ public class FileMan {
         File[] listOfFiles = null;
         try {
             createDirIfNotExist(dir);
-            log.info("Examining directory: " + dir);
+            System.out.println("Examining directory: " + dir);
             File directory = new File(dir);
-            log.info("Directory found. Proceeding to examine. ");
+            System.out.println("Directory found. Proceeding to examine. ");
             listOfFiles = directory.listFiles();
             Integer numberOfFile = listOfFiles.length;
             if (numberOfFile == 0) {
-                log.info("The directory may be empty");
+                System.out.println("The directory may be empty");
             }
 
         } catch (Exception e) {
-            log.error("Error occured: " + e);
+            System.out.println("Error occured: " + e);
         }
         return listOfFiles;
     }

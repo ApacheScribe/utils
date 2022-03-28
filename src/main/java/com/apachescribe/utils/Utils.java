@@ -4,17 +4,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
 // import org.springframework.stereotype.Component;
 
 public class Utils {
 
-    private static final Logger log = Logger.getLogger(Utils.class);
-
     public static String filenameTimestamp(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String dateString = format.format(date) + "_C2B.CSV";
-        log.info("Filename will be: " + dateString);
+        System.out.println("Filename will be: " + dateString);
         return dateString;
     }
 
@@ -27,7 +24,7 @@ public class Utils {
         String code = "BANC";
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String yDate = Time.today().substring(2);
-        String yTime = Time.getCurrentTimeStamp();
+        // String yTime = Time.getCurrentTimeStamp();
         int length = 2;
         char[] text = new char[length];
         for (int i = 0; i < length; i++) {

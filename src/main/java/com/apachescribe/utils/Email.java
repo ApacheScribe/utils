@@ -19,14 +19,11 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.apache.log4j.Logger;
 // import org.springframework.beans.factory.annotation.Value;
 // import org.springframework.context.annotation.Configuration;
 
 // @Configuration
 public class Email {
-
-    private static final Logger log = Logger.getLogger(Email.class);
 
     // @Value("${mail-from}")
     private String mailFrom;
@@ -53,27 +50,28 @@ public class Email {
 
         Boolean mailSentSuccessfully = false;
 
-        log.info("Begin mail sending");
-        log.info("");
+        System.out.println("Begin mail sending");
+        System.out.println("");
 
         // Get system properties
         Properties properties = new Properties();
 
         // Setup mail server host
         properties.setProperty("mail.smtp.host", mailHost);
-        log.info("Mail host: " + mailHost);
+        System.out.println("Mail host: " + mailHost);
 
         // Setup mail server port
         properties.setProperty("mail.smtp.port", mailPort);
         properties.setProperty("mail.smtp.socketFactory.port", mailPort);
         properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         properties.setProperty("mail.smtp.socketFactory.fallback", "true");
-        log.info("Mail port: " + mailPort);
+        System.out.println("Mail port: " + mailPort);
 
         // enable auth
-        properties.setProperty("mail.smtp.auth", "true");
-        properties.setProperty("mail.smtp.starttls.enable", "true");
-        log.info("Auth: " + "true");
+        Boolean authBool = true;
+        properties.setProperty("mail.smtp.auth", authBool.toString());
+        properties.setProperty("mail.smtp.starttls.enable", authBool.toString());
+        System.out.println("Auth: " + authBool.toString());
 
         properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
@@ -85,7 +83,7 @@ public class Email {
             }
         });
 
-        log.info("System properties set, properties added to a new session");
+        System.out.println("System properties set, properties added to a new session");
 
         try {
             // Create a default MimeMessage object.
@@ -93,28 +91,28 @@ public class Email {
 
             // Set From: header field of the header.
             message.setFrom(new InternetAddress(mailFrom));
-            log.info("From: " + mailFrom);
+            System.out.println("From: " + mailFrom);
 
             // Set To: header field of the header.
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(mailTo));
-            log.info("To: " + mailTo);
+            System.out.println("To: " + mailTo);
 
             // Set CC: header field of the header.
             for (int i = 0; i < mailToCc.split(",").length; i++) {
                 message.addRecipient(Message.RecipientType.CC, new InternetAddress(mailToCc.split(",")[i]));
-                log.info("CC" + i + ": " + mailToCc.split(",")[i]);
+                System.out.println("CC" + i + ": " + mailToCc.split(",")[i]);
             }
 
             // Set Subject: header field
             message.setSubject(mailSubject);
-            log.info("Subject: " + mailSubject);
+            System.out.println("Subject: " + mailSubject);
 
             // Create the message part
             BodyPart messageBodyPart = new MimeBodyPart();
 
             // Fill the message
             messageBodyPart.setText("\n\n\n" + mailContent + "\n\n\n");
-            log.info("Content: " + mailContent);
+            System.out.println("Content: " + mailContent);
 
             // Create a multipar message
             Multipart multipart = new MimeMultipart();
@@ -129,7 +127,7 @@ public class Email {
                     messageBodyPart.setDataHandler(new DataHandler(csvAttatchment));
                     messageBodyPart.setFileName(("NC Bank transactions " + a[i].getName()));
                     multipart.addBodyPart(messageBodyPart);
-                    log.info("Attachment csv source: " + a[i]);
+                    System.out.println("Attachment csv source: " + a[i]);
                 }
             }
 
@@ -138,13 +136,13 @@ public class Email {
 
             // Send message
             Transport.send(message);
-            log.info(" Sent email successfully.");
-            log.info("");
+            System.out.println("Sent email successfully.");
+            System.out.println("");
             mailSentSuccessfully = true;
         } catch (MessagingException mex) {
             mex.printStackTrace();
-            log.error(mex);
-            log.info("");
+            System.err.println(mex);
+            System.out.println("");
         }
         return mailSentSuccessfully;
     }

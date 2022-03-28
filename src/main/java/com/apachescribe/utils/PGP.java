@@ -7,14 +7,10 @@ package com.apachescribe.utils;
 
 import java.io.*;
 
-import org.apache.log4j.Logger;
-
 public class PGP {
 
-    private static final Logger log = Logger.getLogger(PGP.class);
-
     public static String Decrypt(String file) {
-        log.info("file to Decrypt: " + file);
+        System.out.println("file to Decrypt: " + file);
         String outfile = file.substring(0, file.length() - 4);
         try {
             String cmd = "gpg -o " + outfile + " --passphrase " + "LoadConfigs.PASSPHRASE"
@@ -24,17 +20,17 @@ public class PGP {
             p.waitFor();
             p.exitValue();
             p.destroy();
-            log.info("finished Decrypting- Decrypted file: " + outfile);
+            System.out.println("finished Decrypting- Decrypted file: " + outfile);
         } catch (IOException | InterruptedException ex) {
             outfile = "error" + ex.getMessage();
-            log.error("error: " + ex.getMessage());
+            System.err.println("error: " + ex.getMessage());
 
         }
         return outfile;
     }
 
     public static String Encrypt(String file) {
-        log.info("file to Encrypt: " + file);
+        System.out.println("file to Encrypt: " + file);
         String outfile = file + ".gpg";
 
         try {
@@ -43,10 +39,10 @@ public class PGP {
             p.waitFor();
             p.exitValue();
             p.destroy();
-            log.info("finished encrypting- encrypted file: " + outfile);
+            System.out.println("finished encrypting- encrypted file: " + outfile);
         } catch (IOException | InterruptedException ex) {
             outfile = "error" + ex.getMessage();
-            log.error("error: " + ex.getMessage());
+            System.err.println("error: " + ex.getMessage());
         }
         return outfile;
     }

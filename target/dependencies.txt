@@ -1,0 +1,11 @@
+digraph "com.apachescribe:utils:jar:1.0-SNAPSHOT" { 
+	"com.apachescribe:utils:jar:1.0-SNAPSHOT" -> "junit:junit:jar:4.11:test" ; 
+	"com.apachescribe:utils:jar:1.0-SNAPSHOT" -> "log4j:log4j:jar:1.2.17:compile" ; 
+	"com.apachescribe:utils:jar:1.0-SNAPSHOT" -> "com.opencsv:opencsv:jar:3.3:compile" ; 
+	"com.apachescribe:utils:jar:1.0-SNAPSHOT" -> "com.jcraft:jsch:jar:0.1.54:compile" ; 
+	"com.apachescribe:utils:jar:1.0-SNAPSHOT" -> "commons-codec:commons-codec:jar:1.9:compile" ; 
+	"com.apachescribe:utils:jar:1.0-SNAPSHOT" -> "joda-time:joda-time:jar:2.9.9:compile" ; 
+	"com.apachescribe:utils:jar:1.0-SNAPSHOT" -> "com.google.appengine:appengine-api-1.0-sdk:jar:1.9.76:compile" ; 
+	"junit:junit:jar:4.11:test" -> "org.hamcrest:hamcrest-core:jar:1.3:test" ; 
+	"com.opencsv:opencsv:jar:3.3:compile" -> "org.apache.commons:commons-lang3:jar:3.3.2:compile" ; 
+ } 

@@ -6,15 +6,12 @@ import java.util.Date;
 
 import com.opencsv.CSVWriter;
 
-import org.apache.log4j.Logger;
 // import org.springframework.beans.factory.annotation.Autowired;
 // import org.springframework.beans.factory.annotation.Value;
 // import org.springframework.stereotype.Component;
 
 // @Component
 public class Csv {
-
-    private static final Logger log = Logger.getLogger(Csv.class);
 
     // @Value("${csvFileRelativePath}")
     public String csvFileRelativePath;
@@ -27,9 +24,6 @@ public class Csv {
 
     // @Value("${sftp-destination}")
     public String sftp_destination;
-
-    // @Autowired
-    private Utils utils;
 
     // @Autowired
     private FileMan fileMan;
@@ -46,20 +40,20 @@ public class Csv {
     private File createFile(String name) {
         File file = null;
         try {
-            log.info("Locating csv file ... ");
+            System.out.println("Locating csv file ... ");
             file = new File(csvFileRelativePath);
         } catch (Exception e) {
-            log.error(e);
+            System.err.println(e);
         }
         return file;
     }
 
     public void openWriter(File csvFile) {
 
-        String firstLine = null;
+        // String firstLine = null;
 
         try {
-            log.info("Initializing csv writer ... ");
+            System.out.println("Initializing csv writer ... ");
             output = new FileWriter(csvFile);
             write = new CSVWriter(output, CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER,
                     CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
@@ -71,16 +65,16 @@ public class Csv {
             // firstLine = Files.lines(csvFile.toPath()).findFirst().get();
 
         } catch (Exception e) {
-            log.info("Initializing csv writer failed: " + e);
+            System.out.println("Initializing csv writer failed: " + e);
         }
     }
 
     public void closeWriter() {
         try {
-            log.info("Closing csv writer");
+            System.out.println("Closing csv writer");
             write.close();
         } catch (Exception e) {
-            log.info("Closing csv writer failed: " + e);
+            System.err.println("Closing csv writer failed: " + e);
             e.printStackTrace();
         }
     }
@@ -90,17 +84,17 @@ public class Csv {
         File csvFile = new File(this.csvFileRelativePath);
         try {
             if (!csvFile.exists()) {
-                log.info("Creating new csv file ... ");
+                System.out.println("Creating new csv file ... ");
                 csvFile = createFile(
                         this.csvFileRelativePath.split("/")[this.csvFileRelativePath.split("/").length - 1]);
             } else {
-                log.info("Appending to existing csv file ... ");
+                System.err.println("Appending to existing csv file ... ");
             }
             String[] value = { msisdn, id, amount, string, string2, string3, string4, string5 };
             write.writeNext(value);
             // write.close();
         } catch (Exception e) {
-            log.error(e);
+            System.err.println(e);
         }
     }
 
@@ -114,9 +108,9 @@ public class Csv {
         File[] filesToMail = null;
         try {
             filesToMail = fileMan.getFiles(csvFileArchiveToMailRelativePath);
-            log.info("Found " + Integer.toString(filesToMail.length) + " files");
+            System.out.println("Found " + Integer.toString(filesToMail.length) + " files");
         } catch (Exception e) {
-            log.error("Error finding files ... ");
+            System.err.println("Error finding files ... ");
         }
         return filesToMail;
     }
@@ -138,12 +132,12 @@ public class Csv {
             File var = files[i];
             uploadCsv(files[i].getAbsolutePath()); // upload to sftp server
             email.sendMailWithAttachment(files, ".csv"); // this won't work, check semantics
-            log.info("Notification email sent for file " + var.getName() + ". Archiving it ...");
+            System.out.println("Notification email sent for file " + var.getName() + ". Archiving it ...");
             try {
                 archiveExistingCsv(var.getName());
-                log.info("File " + var.getName() + " archived successfully....");
+                System.out.println("File " + var.getName() + " archived successfully....");
             } catch (Exception e) {
-                log.info("File " + var.getName() + " archived failed with error ...." + e);
+                System.err.println("File " + var.getName() + " archived failed with error ...." + e);
             }
         }
     }

@@ -6,9 +6,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.log4j.Logger;
 
 // import org.springframework.beans.factory.annotation.Value;
 // import org.springframework.stereotype.Component;
@@ -18,15 +15,13 @@ public class Scheduler {
 
     // @Value("${sendTransactionFileTimeIntervalInSeconds}")
 
-    private static final Logger log = Logger.getLogger(Scheduler.class);
-
     // Here, Object is the return type of the function that is accepted as an
     // argument for this
 
     // change void to whatever you need
     public static void timeoutFunction(String fnReturnVal) {
 
-        Object p = null; // whatever object you need here
+        // Object p = null; // whatever object you need here
 
         String threadSleeptime = null;
 
@@ -37,11 +32,11 @@ public class Scheduler {
             threadSleeptime = config.getThreadSleepTime();
 
         } catch (Exception e) {
-            log.error(e);
-            log.error("");
-            log.error("Defaulting thread sleep time to 105000 miliseconds.");
-            log.error("");
             threadSleeptime = "100000";
+            System.err.println(e);
+            System.out.println("");
+            System.err.println("Defaulting thread sleep time to " + threadSleeptime + " miliseconds.");
+            System.out.println("");
         }
 
         ExecutorService executor = Executors.newCachedThreadPool();
@@ -54,9 +49,9 @@ public class Scheduler {
         Future<Object> future = executor.submit(task);
 
         try {
-            p = future.get(Integer.parseInt(threadSleeptime), TimeUnit.MILLISECONDS);
+            // p = future.get(Integer.parseInt(threadSleeptime), TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            log.error(e + ". The function timed out after [" + threadSleeptime
+            System.err.println(e + ". The function timed out after [" + threadSleeptime
                     + "] miliseconds before a response was received.");
         } finally {
             // if task has started then don't stop it
