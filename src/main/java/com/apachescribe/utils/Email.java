@@ -76,12 +76,15 @@ public class Email {
         properties.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 
         // Get the default Session object.
-        Session session = Session.getInstance(properties, new Authenticator() {
+        Session _session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication("username", "password");
             }
         });
+        
+        // Without authentication
+        Session session = Session.getInstance(properties);
 
         System.out.println("System properties set, properties added to a new session");
 
