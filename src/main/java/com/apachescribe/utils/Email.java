@@ -112,8 +112,11 @@ public class Email {
 
             // Create the message part
             BodyPart messageBodyPart = new MimeBodyPart();
+            
+            // Fill the message: HTML
+            //messageBodyPart.setContent("\n\n\n" + mailContent + "\n\n\n", "text/html; charset=utf-8");
 
-            // Fill the message
+            // Fill the message: text
             messageBodyPart.setText("\n\n\n" + mailContent + "\n\n\n");
             System.out.println("Content: " + mailContent);
 
