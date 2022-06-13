@@ -55,11 +55,11 @@
       <version>1.9.76</version>
     </dependency>
 
-    <!-- XML to JSON and reverse-->
+    <!-- XML to JSON and reverse; for the version use the latest - has more features -->
     <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
-      <version>20160212</version>
+      <version>20220320</version> 
     </dependency>
 
   </dependencies>
